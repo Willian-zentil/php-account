@@ -2,6 +2,10 @@
 //ok
 namespace Alura\Banco\Modelo\Conta;
 //Declaração da class Conta
+use Exception\ExceptionSaldoInsuficiente;
+use http\Exception\InvalidArgumentException;
+use mysql_xdevapi\Exception;
+
 abstract class Conta
 {
   private $titular;
@@ -30,8 +34,7 @@ abstract class Conta
       $tarifaSaque = $this->percentualTarifa();
       $valorSaque = $valorASacar + $tarifaSaque;
       if($valorSaque > $this->saldo){
-          echo 'Valor para saque indisponivel';
-          return;
+          throw new ExceptionSaldoInsuficiente('valor indisponivel');
       }
 
       $this->saldo -= $valorSaque;
@@ -40,8 +43,7 @@ abstract class Conta
   public function depositar(float $valorDepositar):void
   {
       if($valorDepositar < 0){
-          echo 'valor precisa ser positivo';
-          return;
+         throw new \InvalidArgumentException("o valor não é permitido");
       }
       $this->saldo += $valorDepositar;
   }
